@@ -86,7 +86,6 @@ type Props = {
 
 function SymbolSearch({ selectedSymbol, setSelectedSymbol }: Props) {
   const [inputValue, setInputValue] = useState(selectedSymbol || "");
-  // const [searchResults, setSearchResults] = useState<Array<StockSymbol>>([]);
   const [loading, setLoading] = useState(false);
 
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -109,7 +108,6 @@ function SymbolSearch({ selectedSymbol, setSelectedSymbol }: Props) {
           function: "SYMBOL_SEARCH",
           keywords: query,
         });
-        // const data = await mockFetchSymbol(query);
         // setSearchResults(data.bestMatches);
       } catch (error) {
         console.error("Error fetching symbol:", error);

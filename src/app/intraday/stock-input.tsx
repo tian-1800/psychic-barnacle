@@ -11,7 +11,6 @@ export type StockSymbol = {
   "6. marketClose": string;
   "7. timezone": string;
   "8. currency": string;
-  "9. matchScore": string;
 };
 
 type Props = {
