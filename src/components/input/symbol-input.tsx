@@ -10,9 +10,9 @@ type Props = {
   loading: boolean;
   children?: ReactNode;
   selectedSymbol?: string;
-  // setSelectedSymbol: (symbol: string) => void;
   inlineSubmitButton?: boolean;
   submitButtonText?: string;
+  useFavorites?: boolean;
 };
 
 const favStocks = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN", "META"];
@@ -22,9 +22,9 @@ const SymbolInput = ({
   loading,
   children,
   selectedSymbol,
-  // setSelectedSymbol,
   inlineSubmitButton = true,
   submitButtonText = "Get Data",
+  useFavorites = false,
 }: Props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchSymbol, setSearchSymbol] = useState(selectedSymbol || "");
@@ -137,7 +137,8 @@ const SymbolInput = ({
             </div>
           )}
         </div>
-        {children ?? (
+        {children}
+        {useFavorites && (
           <ul className="flex flex-wrap gap-2 justify-center">
             {favStocks.map((symbol) => (
               <li
@@ -149,7 +150,6 @@ const SymbolInput = ({
                     setSearchSymbol(symbol);
                     getStockData(symbol);
                     setShowDropdown(false);
-                    // setSelectedSymbol(symbol);
                   }}
                 >
                   {symbol}

@@ -25,7 +25,7 @@ const StockDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         <DashboardHeader title="Alpha Vantage Quotes" description="Real-time stock quotes from Alpha Vantage" />
 
-        <SymbolInput getStockData={getStockData} loading={loading} />
+        <SymbolInput getStockData={getStockData} loading={loading} useFavorites />
 
         <div className="max-w-2xl mx-auto">
           {loading ? (

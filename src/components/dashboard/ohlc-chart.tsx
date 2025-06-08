@@ -6,13 +6,13 @@ import { useSearchParams } from "next/navigation";
 import React, { useMemo } from "react";
 import Chart from "react-apexcharts";
 
-const OHLCChart = ({ data }: { data?: OHLCResponse }) => {
+const OHLCChart = ({ data, interval: intervalProps }: { data?: OHLCResponse; interval?: string }) => {
   const searchParams = useSearchParams();
-  const interval = searchParams.get("interval");
+  const interval = intervalProps || searchParams.get("interval") || "";
   const symbol = searchParams.get("symbol");
 
   const series = useMemo(() => {
-    const intervalKey = `Time Series (${interval})` as const;
+    const intervalKey = `Time Series (${interval.charAt(0).toUpperCase() + interval.slice(1)})` as const;
     const timeSeries = data?.[intervalKey];
     if (!timeSeries) return [];
 
