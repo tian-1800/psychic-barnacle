@@ -10,12 +10,9 @@ type Props = {
 const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#8dd1e1", "#d084d0"];
 
 const SymbolInputMultiple = ({ getStockData: getStockDataProp, loading }: Props) => {
-  // const [activeStocks, setActiveStocks] = useState<{ symbol: string }[]>([]);
   const [activeStocks = [], setActiveStocks] = useParamState<string[]>("activeStocks");
-  // const [selectedSymbol, setSelectedSymbol] = useParamState<Record<string, string>>("symbol");
 
   const handleAddStock = (selectedSymbol: string) => {
-    console.log("Adding stock:", selectedSymbol);
     if (selectedSymbol && !activeStocks?.find((stock) => stock === selectedSymbol)) {
       setActiveStocks([...activeStocks, selectedSymbol]);
     }
@@ -27,7 +24,7 @@ const SymbolInputMultiple = ({ getStockData: getStockDataProp, loading }: Props)
   };
 
   const removeStock = (symbolToRemove: string) => {
-    if (!activeStocks) return;
+    if (!activeStocks.length) return;
     setActiveStocks(activeStocks.filter((stock) => stock !== symbolToRemove));
   };
 
@@ -36,9 +33,8 @@ const SymbolInputMultiple = ({ getStockData: getStockDataProp, loading }: Props)
       getStockData={getStockData}
       loading={loading}
       selectedSymbol={""}
-      // setSelectedSymbol={setSelectedSymbol}
       inlineSubmitButton={true}
-      submitButtonText="Add Symbol"
+      useMultipleInput
     >
       {activeStocks.length > 0 && (
         <div className="mt-4">
@@ -51,7 +47,11 @@ const SymbolInputMultiple = ({ getStockData: getStockDataProp, loading }: Props)
                 style={{ backgroundColor: colors[i] }}
               >
                 {stock}
-                <button onClick={() => removeStock(stock)} className="ml-2 text-white hover:text-gray-200">
+                <button
+                  type="button"
+                  onClick={() => removeStock(stock)}
+                  className="ml-2 text-white hover:text-gray-200"
+                >
                   ×
                 </button>
               </span>

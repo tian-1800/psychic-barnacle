@@ -28,8 +28,9 @@ export const useParamState = <T>(key: string, defaultValue?: T) => {
   const router = useRouter();
 
   const state = useMemo(() => {
-    const param = searchParams.get(key);
-    if (param === null) {
+    const params = searchParams ? new URLSearchParams(searchParams.toString()) : null; // Unwrap searchParams
+    const param = params?.get(key);
+    if (!param) {
       return defaultValue;
     }
     try {
@@ -41,14 +42,14 @@ export const useParamState = <T>(key: string, defaultValue?: T) => {
 
   const setState = useCallback(
     (value: T) => {
-      const newParams = new URLSearchParams(searchParams);
+      const params = searchParams ? new URLSearchParams(searchParams.toString()) : new URLSearchParams();
       if (value === undefined || value === null) {
-        newParams.delete(key);
+        params.delete(key);
       } else {
         const stringifiedValue = typeof value === "object" && value !== null ? JSON.stringify(value) : String(value);
-        newParams.set(key, stringifiedValue);
+        params.set(key, stringifiedValue);
       }
-      router.push(`?${newParams.toString()}`, { scroll: false });
+      router.push(`?${params.toString()}`, { scroll: false });
     },
     [key, router, searchParams]
   );

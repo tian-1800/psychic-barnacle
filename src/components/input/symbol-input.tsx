@@ -13,6 +13,7 @@ type Props = {
   inlineSubmitButton?: boolean;
   submitButtonText?: string;
   useFavorites?: boolean;
+  useMultipleInput?: boolean;
 };
 
 const favStocks = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN", "META"];
@@ -25,6 +26,7 @@ const SymbolInput = ({
   inlineSubmitButton = true,
   submitButtonText = "Get Data",
   useFavorites = false,
+  useMultipleInput = false,
 }: Props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchSymbol, setSearchSymbol] = useState(selectedSymbol || "");
@@ -54,6 +56,10 @@ const SymbolInput = ({
   };
 
   const selectSymbol = (symbol: string) => {
+    if (useMultipleInput) {
+      setSearchSymbol("");
+      getStockData(symbol);
+    }
     setSearchSymbol(symbol);
     setShowDropdown(false);
     clearData();
@@ -63,7 +69,6 @@ const SymbolInput = ({
     e.preventDefault();
     if (searchSymbol.trim()) {
       getStockData(searchSymbol);
-      // setSelectedSymbol(searchSymbol);
     }
   };
 
@@ -89,7 +94,7 @@ const SymbolInput = ({
             className="w-full pl-12 pr-4 py-4 text-lg border border-gray-300 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
             autoComplete="off"
           />
-          {inlineSubmitButton && (
+          {inlineSubmitButton && !useMultipleInput && (
             <button
               type="submit"
               disabled={loading || !searchSymbol.trim()}

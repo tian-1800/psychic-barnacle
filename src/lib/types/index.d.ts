@@ -1,4 +1,4 @@
-export type OHLC = {
+export type Ohlcv = {
   "1. open": string;
   "2. high": string;
   "3. low": string;
@@ -15,8 +15,10 @@ export type OHLCResponse = {
     "3. Last Refreshed": string;
     "4. Interval": Interval;
   };
-  [key: `Time Series (${string})`]: Record<string, OHLC>;
+  [key: `Time Series (${string})`]: Record<string, Ohlcv>;
 };
+
+export type FormattedOhlcv = Record<string, Ohlcv>;
 
 export type StockSymbol = {
   "1. symbol": string;
