@@ -1,21 +1,29 @@
 "use client";
 
-import StockInput from "./stock-input";
 import dynamic from "next/dynamic";
-import { OHLCResponse } from "@/lib/types/ohlc";
-import useFetchAggregated from "@/lib/utils/fetch -aggregated";
+import { OHLCResponse } from "@/lib/types";
+import useFetch from "@/lib/utils/fetch";
+import SymbolInputInterval from "@/components/input/symbol-input-interval";
 
-const OHLCVolumeChart = dynamic(() => import("./apex"), { ssr: false });
+const OHLCVolumeChart = dynamic(() => import("../../components/dashboard/ohlc-chart"), { ssr: false });
 
 const Intraday = () => {
-  const { fetchData, data: ohlcData } = useFetchAggregated<OHLCResponse>();
+  const { fetchData, data: ohlcData } = useFetch<OHLCResponse>();
 
   return (
-    <div className="flex flex-col ">
-      <StockInput fetchData={fetchData} />
-      <OHLCVolumeChart symbol={"IBM"} />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="px-4 py-8 flex flex-col gap-8 ">
+        <SymbolInputInterval
+          fetchData={fetchData}
+          apiFunction="TIME_SERIES_INTRADAY"
+          allowedIntervals={allowedIntervals}
+        />
+        <OHLCVolumeChart data={ohlcData} />
+      </div>
     </div>
   );
 };
+
+const allowedIntervals = ["1min", "5min", "15min", "30min", "60min"];
 
 export default Intraday;

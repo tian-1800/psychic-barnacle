@@ -1,7 +1,7 @@
 import { ChangeEvent } from "react";
 
 type Props = {
-  interval: string;
+  interval?: string;
   setInterval: (value: string) => void;
 };
 
@@ -10,10 +10,11 @@ const Interval = ({ interval, setInterval }: Props) => {
     const value = e.target.value;
     setInterval(value);
   };
+
   return (
     <div className="mb-6">
       <label htmlFor="interval" className="block text-gray-700 font-medium mb-2">
-        Interval
+        Interval:
       </label>
       <select
         id="interval"
