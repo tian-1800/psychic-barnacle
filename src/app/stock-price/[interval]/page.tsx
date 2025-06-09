@@ -39,22 +39,20 @@ const StockPrice = ({ params }: { params: Promise<{ interval: string }> }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <DashboardHeader
-          title={`${capitalize(interval)} Stock Price Movement`}
-          description={`${capitalize(interval)} stock price movement from Alpha Vantage`}
-        />
-        <SymbolInputMultiple
-          getStockData={getStockData}
-          loading={loading}
-          activeStocks={activeStocks}
-          setActiveStocks={setActiveStocks}
-        />
-        {filteredOhlcData && (
-          <StockPriceMovementChart data={filteredOhlcData} chartTitle={`${interval} Stock Price Movement`} />
-        )}
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <DashboardHeader
+        title={`${capitalize(interval)} Stock Price Movement`}
+        description={`${capitalize(interval)} stock price movement from Alpha Vantage`}
+      />
+      <SymbolInputMultiple
+        getStockData={getStockData}
+        loading={loading}
+        activeStocks={activeStocks}
+        setActiveStocks={setActiveStocks}
+      />
+      {filteredOhlcData && (
+        <StockPriceMovementChart data={filteredOhlcData} chartTitle={`${interval} Stock Price Movement`} />
+      )}
     </div>
   );
 };

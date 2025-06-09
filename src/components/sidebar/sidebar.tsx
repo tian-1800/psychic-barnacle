@@ -3,8 +3,8 @@ import NavLinks from "./nav-links";
 
 const Sidebar = () => {
   return (
-    <div className="flex flex-col justify-between">
-      <div className="overflow-y-scroll sticky top-4  ">
+    <div className="flex flex-col justify-between sticky top-4">
+      <div className="overflow-y-scroll ">
         <Account />
         <NavLinks />
       </div>

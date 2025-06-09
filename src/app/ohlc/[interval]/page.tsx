@@ -22,15 +22,13 @@ const OHLC = ({ params }: { params: Promise<{ interval: string }> }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <DashboardHeader
-          title={`${capitalize(interval)} Stock OHLCV`}
-          description={`${capitalize(interval)} stock data from Alpha Vantage`}
-        />
-        <SymbolInputFavorite getStockData={getStockData} loading={loading} />
-        <OHLCVolumeChart data={ohlcData} interval={interval} />
-      </div>
+    <div className="container mx-auto px-4 py-8 ">
+      <DashboardHeader
+        title={`${capitalize(interval)} Stock OHLCV`}
+        description={`${capitalize(interval)} stock data from Alpha Vantage`}
+      />
+      <SymbolInputFavorite getStockData={getStockData} loading={loading} />
+      <OHLCVolumeChart data={ohlcData} />
     </div>
   );
 };

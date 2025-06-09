@@ -1,27 +1,27 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { OHLCResponse } from "@/lib/types";
+import { FormattedOhlcv } from "@/lib/types";
 import useFetch from "@/lib/utils/fetch";
 import SymbolInputInterval from "@/components/input/symbol-input-interval";
 import DashboardHeader from "@/components/dashboard/header";
+import { formatOHLCVResponse } from "@/lib/utils/ohlcv";
 
 const OHLCVolumeChart = dynamic(() => import("../../components/dashboard/ohlc-chart"), { ssr: false });
 
 const Intraday = () => {
-  const { fetchData, data: ohlcData } = useFetch<OHLCResponse>();
+  const { fetchData, data: ohlcData } = useFetch<FormattedOhlcv>();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-8">
-        <DashboardHeader title="Intraday Stock OHLCV" description="Intraday stock data from Alpha Vantage" />
-        <SymbolInputInterval
-          fetchData={fetchData}
-          apiFunction="TIME_SERIES_INTRADAY"
-          allowedIntervals={allowedIntervals}
-        />
-        <OHLCVolumeChart data={ohlcData} />
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <DashboardHeader title="Intraday Stock OHLCV" description="Intraday stock data from Alpha Vantage" />
+      <SymbolInputInterval
+        fetchData={fetchData}
+        apiFunction="TIME_SERIES_INTRADAY"
+        allowedIntervals={allowedIntervals}
+        transformData={(interval: string) => formatOHLCVResponse(interval)}
+      />
+      <OHLCVolumeChart data={ohlcData} />
     </div>
   );
 };

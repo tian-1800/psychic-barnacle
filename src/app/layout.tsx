@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <main className="bg-stone-100 grid gap-4 p-4 grid-cols-[220px_1fr] h-screen">
+        <main className="bg-stone-100 grid gap-4 p-4 grid-cols-[220px_1fr] h-screen overflow-hidden">
           <Sidebar />
-          {children}
+          <div className="max-h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-y-scroll">{children}</div>
         </main>
       </body>
     </html>
