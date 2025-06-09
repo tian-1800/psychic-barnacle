@@ -39,8 +39,11 @@ function useFetch<T, Aggregate extends boolean = false>(aggregate: Aggregate = f
         let result: unknown;
 
         // client side cache for development purpose
-        const storageDriver = cacheStorage === "sessionStorage" ? sessionStorage : localStorage;
-        const cachedData = cacheStorage ? storageDriver.getItem(fullUrl) : null;
+        const storageDriver =
+          cacheStorage === "sessionStorage" ? sessionStorage : cacheStorage === "localStorage" ? localStorage : null;
+
+        const cachedData = storageDriver?.getItem(fullUrl);
+
         if (cachedData) {
           result = JSON.parse(cachedData) as T;
         } else {
@@ -50,7 +53,7 @@ function useFetch<T, Aggregate extends boolean = false>(aggregate: Aggregate = f
           result = await response.json();
 
           result = options?.transformData?.(result) || (result as T);
-          localStorage.setItem(fullUrl, JSON.stringify(result));
+          storageDriver?.setItem(fullUrl, JSON.stringify(result));
         }
 
         if (aggregate) {
@@ -67,6 +70,7 @@ function useFetch<T, Aggregate extends boolean = false>(aggregate: Aggregate = f
         options?.onSuccess?.(result as T);
       } catch (err: unknown) {
         if (err instanceof Error) {
+          console.error(err);
           setError(err);
         }
       } finally {
