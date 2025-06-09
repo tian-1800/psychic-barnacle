@@ -41,7 +41,7 @@ const StockDashboard = () => {
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-12">
             <div className="text-center">
               <FaChartBar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Welcome to Stock Dashboard</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Welcome to Alpha Vantage Stock Dashboard</h3>
             </div>
           </div>
         )}

@@ -1,3 +1,5 @@
+"use client";
+
 import useParamState from "@/lib/utils/param-state";
 import SymbolInput from "./symbol-input";
 

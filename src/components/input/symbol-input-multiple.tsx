@@ -1,3 +1,5 @@
+"use client";
+
 import SymbolInput from "./symbol-input";
 import useInitialEffect from "@/lib/utils/initial-effect";
 

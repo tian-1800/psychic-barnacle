@@ -6,6 +6,7 @@ import useFetch from "@/lib/utils/fetch";
 import SymbolInputInterval from "@/components/input/symbol-input-interval";
 import DashboardHeader from "@/components/dashboard/header";
 import { formatOHLCVResponse } from "@/lib/utils/ohlcv";
+import { Suspense } from "react";
 
 const OHLCVolumeChart = dynamic(() => import("../../components/dashboard/ohlc-chart"), { ssr: false });
 
@@ -15,12 +16,14 @@ const Intraday = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <DashboardHeader title="Intraday Stock OHLCV" description="Intraday stock data from Alpha Vantage" />
-      <SymbolInputInterval
-        fetchData={fetchData}
-        apiFunction="TIME_SERIES_INTRADAY"
-        allowedIntervals={allowedIntervals}
-        transformData={(interval: string) => formatOHLCVResponse(interval)}
-      />
+      <Suspense fallback={<div className="text-center text-gray-500">Loading chart...</div>}>
+        <SymbolInputInterval
+          fetchData={fetchData}
+          apiFunction="TIME_SERIES_INTRADAY"
+          allowedIntervals={allowedIntervals}
+          transformData={(interval: string) => formatOHLCVResponse(interval)}
+        />
+      </Suspense>
       <OHLCVolumeChart data={ohlcData} />
     </div>
   );
