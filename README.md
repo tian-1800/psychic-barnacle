@@ -1,3 +1,7 @@
+**Alpha Vantage Dashboard**
+
+A simple dashboard for Alpha Vantage stock data (https://www.alphavantage.co/)
+
 **Demo**
 
 https://psychic-barnacle.vercel.app/
