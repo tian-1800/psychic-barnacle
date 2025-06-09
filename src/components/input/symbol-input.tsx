@@ -16,7 +16,7 @@ type Props = {
   useMultipleInput?: boolean;
 };
 
-const favStocks = ["AAPL", "GOOGL", "MSFT", "TSLA", "AMZN", "META"];
+const favStocks = ["IBM", "GOOGL", "MSFT", "TSLA", "AMZN", "META"];
 
 const SymbolInput = ({
   getStockData,

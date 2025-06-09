@@ -60,31 +60,15 @@ const StockPriceMovementChart = ({ chartTitle = "Stock Price Movement", data }: 
         intersect: false,
         x: { format: "dd MMM yyyy, HH:mm" },
         y: {
-          formatter: (value: number, { seriesName }: { seriesName: string }) => {
-            return value ? `${seriesName}: $${value.toFixed(2)}` : "N/A";
+          formatter: (value: number) => {
+            return value ? `${value.toFixed(2)}` : "N/A";
           },
         },
         marker: { show: true },
       },
-      legend: {
-        position: "top",
-        horizontalAlign: "center",
-        fontSize: "14px",
-        markers: {
-          width: 12,
-          height: 12,
-          strokeWidth: 0,
-          radius: 12,
-        },
-        itemMargin: { horizontal: 10, vertical: 5 },
-      },
       grid: {
         borderColor: "#e7e7e7",
         row: { colors: ["#f3f3f3", "transparent"], opacity: 0.5 },
-      },
-      markers: {
-        size: 0,
-        hover: { size: 5 },
       },
     };
   }, [chartTitle]);

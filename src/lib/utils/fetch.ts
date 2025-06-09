@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 
 const baseUrl = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_BASE_URL || "https://www.alphavantage.co/query";
 const apiKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
+const cacheStorage = process.env.NEXT_PUBLIC_CACHE_STORAGE;
 
 export const getFullUrl = (queryParams: Record<string, string | number> = {}) => {
   const params = new URLSearchParams();
@@ -35,42 +36,50 @@ function useFetch<T, Aggregate extends boolean = false>(aggregate: Aggregate = f
       const fullUrl = getFullUrl(queryParams);
 
       try {
-        console.log(fullUrl);
-
-        // const response = await fetch(fullUrl, {
-        //   method: "GET",
-        // });
-        // const result = await response.json();
-
         let result: unknown;
-        if (fullUrl.includes("SYMBOL_SEARCH")) {
-          console.log("Using mock data for SYMBOL_SEARCH endpoint");
-          result = mockSymbols; // Replace with `result` when using real API
-        } else if (fullUrl.includes("GLOBAL_QUOTE")) {
-          console.log("Using mock data for GLOBAL_QUOTE endpoint");
-          result = mockQuote; // Replace with `result` when using real API
-        } else if (fullUrl.includes("TIME_SERIES")) {
-          console.log("Using mock data for TIME_SERIES endpoint");
-          result = mockSeries(String(queryParams.symbol)); // Replace with `result` when using real API
+
+        const storageDriver = cacheStorage === "sessionStorage" ? sessionStorage : localStorage;
+        const cachedData = cacheStorage ? storageDriver.getItem(fullUrl) : null;
+        if (cachedData) {
+          result = JSON.parse(cachedData) as T;
         } else {
-          throw new Error("Unsupported endpoint for mock data");
+          // const response = await fetch(fullUrl, {
+          //   method: "GET",
+          // });
+          // const result = await response.json();
+
+          // Mock result start
+          if (fullUrl.includes("SYMBOL_SEARCH")) {
+            console.log("Using mock data for SYMBOL_SEARCH endpoint");
+            result = mockSymbols;
+          } else if (fullUrl.includes("GLOBAL_QUOTE")) {
+            console.log("Using mock data for GLOBAL_QUOTE endpoint");
+            result = mockQuote;
+          } else if (fullUrl.includes("TIME_SERIES")) {
+            console.log("Using mock data for TIME_SERIES endpoint");
+            result = mockSeries(String(queryParams.symbol));
+          } else {
+            throw new Error("Unsupported endpoint for mock data");
+          }
+          // Mock result end
+
+          result = options?.transformData?.(result) || (result as T);
+          localStorage.setItem(fullUrl, JSON.stringify(result));
         }
-        const transformedData = options?.transformData?.(result) || (result as T);
-        console.log("Transformed Data:", transformedData);
+        console.log("Transformed Data:", result);
 
         if (aggregate) {
           setData(
             (prevData) =>
               ({
                 ...(prevData || {}),
-                [options?.key || "default"]: transformedData,
+                [options?.key || "default"]: result,
               } as Aggregate extends true ? Record<string, T> : T)
           );
         } else {
-          setData(transformedData as Aggregate extends true ? Record<string, T> : T);
+          setData(result as Aggregate extends true ? Record<string, T> : T);
         }
-        // setData(transformedData);
-        options?.onSuccess?.(transformedData);
+        options?.onSuccess?.(result as T);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err);
@@ -211,6 +220,8 @@ const mockSeries = (symbol: string) => ({
     "6. Time Zone": "US/Eastern",
   },
   "Time Series (Daily)": mockSeriesInterval(),
+  "Weekly Time Series": mockSeriesInterval(),
+  "Monthly Time Series": mockSeriesInterval(),
 });
 
 export default useFetch;

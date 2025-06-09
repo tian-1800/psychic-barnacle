@@ -1,5 +1,4 @@
 import Account from "./account";
-import Plan from "./plan";
 import NavLinks from "./nav-links";
 
 const Sidebar = () => {
@@ -9,7 +8,6 @@ const Sidebar = () => {
         <Account />
         <NavLinks />
       </div>
-      <Plan />
     </div>
   );
 };

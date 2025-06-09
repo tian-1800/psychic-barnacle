@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { OHLCResponse } from "@/lib/types";
 import useFetch from "@/lib/utils/fetch";
 import SymbolInputInterval from "@/components/input/symbol-input-interval";
+import DashboardHeader from "@/components/dashboard/header";
 
 const OHLCVolumeChart = dynamic(() => import("../../components/dashboard/ohlc-chart"), { ssr: false });
 
@@ -12,7 +13,8 @@ const Intraday = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="px-4 py-8 flex flex-col gap-8 ">
+      <div className="container mx-auto px-4 py-8">
+        <DashboardHeader title="Intraday Stock OHLCV" description="Intraday stock data from Alpha Vantage" />
         <SymbolInputInterval
           fetchData={fetchData}
           apiFunction="TIME_SERIES_INTRADAY"
