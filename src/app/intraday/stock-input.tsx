@@ -14,13 +14,7 @@ const StockInput = ({ fetchData }: Props) => {
   const getStockData = (symbol: string) => {
     if (!interval || !allowedIntervals.includes(interval)) return;
 
-    fetchData(
-      { function: "TIME_SERIES_INTRADAY", symbol, interval },
-      {
-        transformData: (data) => data as OHLCResponse,
-        onSuccess: (data) => console.log("Fetched stock data:", data),
-      }
-    );
+    fetchData({ function: "TIME_SERIES_INTRADAY", symbol, interval });
   };
 
   return (

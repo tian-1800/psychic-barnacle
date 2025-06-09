@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, useState } from "react";
+import { ChangeEvent, ReactNode, useState, useCallback, useRef } from "react";
 import { FaSearch, FaSyncAlt } from "react-icons/fa";
 import useFetch from "@/lib/utils/fetch";
 import { StockSymbol, SymbolFormatted } from "@/lib/types";
@@ -30,30 +30,45 @@ const SymbolInput = ({
 }: Props) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchSymbol, setSearchSymbol] = useState(selectedSymbol || "");
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const { fetchData, data: searchResults = [], loading: searchLoading, clearData } = useFetch<SymbolFormatted[]>();
 
-  const searchSymbols = async (query: string) => {
-    if (!query.trim() || query.length < 1) {
-      clearData();
-      setShowDropdown(false);
-      return;
-    }
-
-    fetchData(
-      { function: "SYMBOL_SEARCH", keywords: query },
-      {
-        transformData: (data) => formatSymbols((data as { bestMatches: StockSymbol[] }).bestMatches),
-        onSuccess: (results) => setShowDropdown(results.length > 0),
+  const searchSymbols = useCallback(
+    async (query: string) => {
+      if (!query.trim() || query.length < 1) {
+        clearData();
+        setShowDropdown(false);
+        return;
       }
-    );
-  };
 
-  const handleInputChange = (value: string) => {
-    // Need to add debounce here
-    setSearchSymbol(value.toUpperCase());
-    searchSymbols(value);
-  };
+      fetchData(
+        { function: "SYMBOL_SEARCH", keywords: query },
+        {
+          transformData: (data) => formatSymbols((data as { bestMatches: StockSymbol[] }).bestMatches),
+          onSuccess: (results) => setShowDropdown(results.length > 0),
+        }
+      );
+    },
+    [clearData, fetchData]
+  );
+
+  const handleInputChange = useCallback(
+    (value: string) => {
+      setSearchSymbol(value.toUpperCase());
+
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      const timeout = setTimeout(() => {
+        searchSymbols(value);
+      }, 1000);
+
+      debounceTimeout.current = timeout;
+    },
+    [debounceTimeout, searchSymbols]
+  );
 
   const selectSymbol = (symbol: string) => {
     if (useMultipleInput) {
@@ -90,7 +105,7 @@ const SymbolInput = ({
             onChange={(e) => handleInputChange(e.target.value)}
             onFocus={() => searchSymbol && setShowDropdown(searchResults.length > 0)}
             onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-            placeholder="Search stocks by symbol(e.g., AAPL, Apple)"
+            placeholder="Search company by symbol(e.g., AAPL, Apple)"
             className="w-full pl-12 pr-4 py-4 text-lg border border-gray-300 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
             autoComplete="off"
           />

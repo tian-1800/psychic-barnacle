@@ -6,13 +6,11 @@ import { useSearchParams } from "next/navigation";
 import React, { Fragment, useMemo } from "react";
 import Chart from "react-apexcharts";
 
-const OHLCChart = ({ data, interval }: { data?: FormattedOhlcv; interval?: string }) => {
+const OHLCChart = ({ data }: { data?: FormattedOhlcv }) => {
   const searchParams = useSearchParams();
-  // const interval = intervalProps || searchParams.get("interval") || "";
   const symbol = searchParams.get("symbol");
 
   const series = useMemo(() => {
-    // const intervalKey = `Time Series (${interval.charAt(0).toUpperCase() + interval.slice(1)})` as const;
     const timeSeries = data;
     if (!timeSeries) return [];
 
@@ -29,15 +27,22 @@ const OHLCChart = ({ data, interval }: { data?: FormattedOhlcv; interval?: strin
     return [{ data: ohlcPoints }];
   }, [data]);
 
+  const seriesVolume = useMemo(() => {
+    const timeSeries = data;
+    if (!timeSeries) return [];
+
+    const ohlcPoints = Object.entries(timeSeries).map(([timestamp, entry]) => ({
+      x: new Date(timestamp),
+      y: parseFloat(entry["5. volume"]),
+    }));
+
+    return [{ name: "Volume", data: ohlcPoints }];
+  }, [data]);
+
   const options: ApexOptions = useMemo(() => {
     return {
-      chart: {
-        type: "candlestick",
-        height: 350,
-      },
-      title: {
-        text: `${symbol} OHLC Chart`,
-      },
+      chart: { height: 350 },
+      title: { text: `${symbol} OHLC Chart` },
       xaxis: {
         type: "datetime",
         labels: {
@@ -52,9 +57,7 @@ const OHLCChart = ({ data, interval }: { data?: FormattedOhlcv; interval?: strin
             upward: "#00B746",
             downward: "#EF403C",
           },
-          wick: {
-            useFillColor: true,
-          },
+          wick: { useFillColor: true },
         },
       },
     };
@@ -63,21 +66,17 @@ const OHLCChart = ({ data, interval }: { data?: FormattedOhlcv; interval?: strin
   const volumeOptions: ApexOptions = useMemo(() => {
     return {
       chart: {
-        type: "line",
         height: 400,
-        zoom: {
-          enabled: true,
-          type: "x",
-          autoScaleYaxis: true,
-        },
-        toolbar: { autoSelected: "zoom", show: true },
+        toolbar: { show: false },
       },
-      title: { text: "Volume", align: "left" },
+      title: { text: `${symbol} Volume Chart` },
       xaxis: {
         type: "datetime",
-        labels: { datetimeUTC: false, format: "dd MMM HH:mm" },
-        title: { text: "Time" },
-        tooltip: { enabled: true },
+        labels: {
+          datetimeUTC: false,
+          trim: true,
+          showDuplicates: true,
+        },
       },
       yaxis: {
         title: { text: "Volume" },
@@ -87,25 +86,13 @@ const OHLCChart = ({ data, interval }: { data?: FormattedOhlcv; interval?: strin
           },
         },
       },
-      stroke: { curve: "linestep", width: 2.5 },
 
-      tooltip: {
-        shared: true,
-        intersect: false,
-        x: { format: "dd MMM yyyy, HH:mm" },
-        y: {
-          formatter: (value: number) => {
-            return value ? `${value.toFixed(2)}` : "N/A";
-          },
-        },
-        marker: { show: true },
-      },
       grid: {
         borderColor: "#e7e7e7",
         row: { colors: ["#f3f3f3", "transparent"], opacity: 0.5 },
       },
     };
-  }, []);
+  }, [symbol]);
 
   if (!symbol) {
     return <Fragment />;
@@ -116,9 +103,9 @@ const OHLCChart = ({ data, interval }: { data?: FormattedOhlcv; interval?: strin
   }
 
   return (
-    <div className="chart-container">
-      <Chart options={options} series={series} type="candlestick" height={350} />
-      <Chart options={volumeOptions} series={series} type="bar" height={400} />
+    <div className="space-y-4">
+      <Chart options={options} series={series} type="candlestick" height={400} />
+      <Chart options={volumeOptions} series={seriesVolume} type="bar" height={400} />
     </div>
   );
 };

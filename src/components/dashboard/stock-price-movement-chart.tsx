@@ -37,7 +37,7 @@ const StockPriceMovementChart = ({ chartTitle = "Stock Price Movement", data }: 
           type: "x",
           autoScaleYaxis: true,
         },
-        toolbar: { autoSelected: "zoom", show: true },
+        toolbar: { show: false },
       },
       title: { text: chartTitle, align: "left" },
       xaxis: {

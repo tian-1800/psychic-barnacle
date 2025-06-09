@@ -28,7 +28,7 @@ const StockCard = ({ data, getStockData }: StockCardProps) => {
         </div>
       </div>
 
-      {/* Price Section */}
+      {/* Price  */}
       <div className="p-6">
         <div className="flex items-baseline space-x-4 mb-6">
           <span className="text-4xl font-bold text-gray-900">{formatNumber(data["05. price"])}</span>
@@ -49,7 +49,7 @@ const StockCard = ({ data, getStockData }: StockCardProps) => {
           </div>
         </div>
 
-        {/* Stats Grid */}
+        {/* OHLC */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-gray-50 rounded-xl p-4">
             <div className="flex items-center space-x-2 mb-2">
